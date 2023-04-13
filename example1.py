@@ -1,8 +1,6 @@
-import numpy as np
+#kept in a seperate folder as the code for these scenes are huge
 from manim import *
-import math
 from math import sin, cos, radians
-
 
 class RotationMatrix(Scene):
     def construct(self):
