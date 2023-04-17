@@ -18,27 +18,30 @@ class OpeningQuote(Scene):
         author.next_to(words, DOWN, buff = 0.5)
         self.play(FadeIn(words))
         self.wait(1)
-        self.play(Write(author, run_time=4))
-        self.wait()
+        self.play(Write(author, run_time=3))
+        self.wait(3)
 
 
 class Intro(Scene):
     def construct(self):
+        text = Tex("Trigonometry").to_edge(UP)
         scalene = Polygon(2*UP, 2*LEFT, DOWN+RIGHT)
         a1 = Angle.from_three_points(DOWN+RIGHT, 2*LEFT, 2*UP)
         a2 = Angle.from_three_points(2*LEFT, 2*UP, DOWN+RIGHT)
         a3 = Angle.from_three_points(2*UP, DOWN+RIGHT, 2*LEFT)
         group = VGroup(scalene, a1, a2, a3).set_y(-0.25).scale(1.2)
         angles = VGroup(a1,a2,a3)
-        self.play(GrowFromCenter(scalene))
-        self.play(Create(angles))
-        self.wait(1)
+        self.add(text)
+        self.play(GrowFromCenter(scalene), run_time=2)
+        self.play(Create(angles), run_time=2)
+        self.wait(2)
         transform = [[1,0.5],[0,1.5]]
         transform2 = [[1.3, 0.9], [0.4, 0.8]]
 
         self.play(ApplyMatrix(transform, group, run_time=1))
-        self.wait(1)
+        self.wait(3)
         self.play(ApplyMatrix(transform2, group, run_time=1))
+        self.wait(4)
 
 class Calculus(Scene):
     def construct(self):
@@ -89,10 +92,10 @@ class Calculus(Scene):
             )
         )
         self.add(axes, axes_labels, func)
-        self.play(Create(VGroup(dot1, dot2, secant)))
-        self.play(dx.animate.set_value(0.001), run_time=8)
+        self.play(Create(VGroup(dot1, dot2, secant)), run_time=2)
+        self.play(dx.animate.set_value(0.001), run_time=4)
         self.wait(2)
-        self.play(x.animate.set_value(1),run_time=5)
+        self.play(x.animate.set_value(1),run_time=3)
         self.wait()
         self.play(x.animate.set_value(7), run_time=5)
 
@@ -105,11 +108,11 @@ class Holonomic(Scene):
         robot_label = Tex("Robot").next_to(robot, DOWN)
         car_direction = DoubleArrow(start=ORIGIN, end=UP*4, color=GREEN).shift(LEFT*2 + DOWN*2)
         robot_direction = Arrow(start=ORIGIN, end=UP*2.5, color=PINK).shift(RIGHT*2)
-        self.play(AnimationGroup(Create(VGroup(car, robot), run_time=2)))
+        self.play(AnimationGroup(Create(VGroup(car, robot), run_time=1)))
         self.play(Write(car_label), Write(robot_label))
         self.play(AnimationGroup(GrowArrow(car_direction), GrowArrow(robot_direction)))
-        self.wait(1)
         self.play(Rotate(robot_direction, 2*PI, about_point=RIGHT*2),run_time=2)
+        self.wait(1)
 
 
 class HolonomicProblem(Scene):
@@ -118,9 +121,10 @@ class HolonomicProblem(Scene):
         robot_forwards = Arrow(ORIGIN, 2*LEFT, color=PINK)
         robot_label = Tex("Front of\\\\the robot").next_to(robot_forwards,LEFT,buff=0.5)
         forwards = Arrow(ORIGIN, 2*UP, color=YELLOW)
-        self.play(GrowFromCenter(robot))
-        self.play(GrowArrow(robot_forwards), GrowArrow(forwards), Write(robot_label))
-        self.wait(2)
+        self.play(GrowFromCenter(robot), Write(robot_label))
+        self.wait(1)
+        self.play(GrowArrow(robot_forwards), GrowArrow(forwards))
+        self.wait(3)
 
 class ThreeThings(Scene):
     def construct(self):
@@ -129,9 +133,13 @@ class ThreeThings(Scene):
         two = Tex("2. Robot will always know it's direction through IMU").next_to(one,DOWN).to_edge(LEFT).arrange(DOWN, center=False, aligned_edge=LEFT)
         three = Tex("3. Robot is holonomic (unlimited movement in x and y)").next_to(two,DOWN).to_edge(LEFT).arrange(DOWN, center=False, aligned_edge=LEFT)
         self.play(Write(req))
+        self.wait(3)
         self.play(Write(one))
+        self.wait(11)
         self.play(Write(two))
+        self.wait(10)
         self.play(Write(three))
+        self.wait(10)
 
 class RobotAndFieldCentric(Scene):
     def construct(self):
@@ -142,13 +150,14 @@ class RobotAndFieldCentric(Scene):
         title = Tex("Robot Centric")
         title.to_edge(UP)
         self.add(robot, robot_forwards, robot_label, title)
-        self.wait(2)
+        self.wait(10)
         self.play(Indicate(robot_forwards))
+        self.wait(6)
         self.play(Transform(title,Tex("Field Centric").to_edge(UP)))
-        self.wait(2)
         self.play(FadeOut(robot_forwards), FadeIn(forwards))
-        self.wait(2)
+        self.wait()
         self.play(Indicate(forwards))
+        self.wait(8)
 
 
 class DeltaArmDemo(Scene):
@@ -202,28 +211,40 @@ class DeltaArmDemo(Scene):
         intermediates = VGroup(a0,b0,c0,oe0)
 
         p = always_redraw(lambda: Dot(pos.get_value()*RIGHT)) #point where a and c intersect
-        self.play(Create(a),Create(b),Create(c))
-        self.play(Write(a_label), Write(b_label), Write(c_label))
-        self.play(Create(p))
-        self.wait()
-        self.play(pos.animate.set_value(2))
-        self.wait()
-        self.play(pos.animate.set_value(3.2))
+        self.play(Create(a),Create(b),Create(c)) # 0:00
+        self.play(Write(a_label), Write(b_label), Write(c_label)) # 0:01
+        self.play(Create(p)) # 0:02
+        self.wait() # 0:03
+        self.play(pos.animate.set_value(2)) # 0:04
+        self.wait() # 0:05
+        self.play(pos.animate.set_value(3.2)) # 0:06
+        self.wait(2) # 0:08
+        self.play(Indicate(b), Indicate(b_label)) # 0:09
+        self.wait() # 0:10
+        self.play(Indicate(a), Indicate(a_label)) # 0:11
+        self.wait(2) # 0:13
+        self.play(pos.animate.set_value(2.8)) # 0:14
+        self.wait() # 0:15
+        self.play(pos.animate.set_value(1.9)) # 0:16
+        self.wait() # 0:17
+        self.play(pos.animate.set_value(3)) # 0:18
+        self.wait() #0:19
         self.play(
             Write(exp),
             Write(plus),
             Write(eq)
-        )
-        self.play(Transform(a0, a1))
-        self.play(Transform(b0, b1))
-        self.play(Transform(c0, c1))
-        self.play(Write(given))
+        ) # 0:20
+        self.play(Transform(a0, a1)) # 0:21
+        self.play(Transform(b0, b1)) #0:22
+        self.play(Transform(c0, c1)) #0:23
+        self.play(Write(given)) #0:24
+        self.wait(3) #0:29
         self.play(Transform(oe0,new_math))
-        self.wait()
+        self.wait(5)
         self.play(Unwrite(VGroup(given, new_math, originalEq, intermediates)))
         self.play(Create(h))
         self.play(Write(h_label))
-        self.wait(3)
+        self.wait(5)
 
 class DeltaSystemOfEquations(Scene):
     def construct(self):
@@ -259,8 +280,20 @@ class DeltaSystemOfEquations(Scene):
         self.play(x.animate.set_value(-0.3), y.animate.set_value(-1), run_time=1)
         self.wait()
         self.play(x.animate.set_value(-1), y.animate.set_value(0))
+        self.wait()
         self.play(x.animate.set_value(0), y.animate.set_value(1))
         self.wait()
+        self.play(x.animate.set_value(-2),y.animate.set_value(2.1), run_time=2)
+        self.wait()
+
+
+class WriteLawOfCosines(Scene):
+    def construct(self):
+        context = Tex(r"On a triangle with sides A,B,C \\ and angles a,b,c opposite of their corresponding sides,").shift(UP)
+        eq1 = MathTex(r"C=\sqrt{A^2+B^2-2AB\cos(c)}").shift(RIGHT * 2 + UP * 3).next_to(context,DOWN,buff=1.1)
+        self.add(context)
+        self.play(Write(eq1))
+        self.wait(8)
 
 class LawOfCosines(Scene):
     def construct(self):
@@ -280,13 +313,19 @@ class LawOfCosines(Scene):
         arc = Angle.from_three_points(satellite_pos, ORIGIN, receiver_pos, other_angle=True)
         arc_label = arc.add(MathTex("L").next_to(arc, UR, buff=-0.01))
         visuals = VGroup(earth, satellite, receiver, earth_center)
-        geometry = VGroup(Rs, Re, d, arc)
+        geometry = VGroup(Rs, Re, d, arc, arc_label)
 
         self.play(Create(visuals))
         self.play(Create(geometry))
-        self.wait()
+        self.wait(2)
+        self.play(Indicate(Rs))
+        self.wait(2)
+        self.play(Indicate(Re))
+        self.wait(1)
+        self.play(Indicate(d)) # 0:12
+        self.wait(4)
         self.play(VGroup(visuals, geometry).animate.to_edge(LEFT))
-        self.wait()
+        self.wait(3)
 
         eq1 = MathTex(r"d=\sqrt{R_e^2+R_s^2-2R_eR_s\cos(L)}").shift(RIGHT*2+UP*3)
         eq2 = MathTex(r"d^2=R_e^2+R_s^2-2R_eR_s\cos(L)").next_to(eq1,DOWN, buff=MED_LARGE_BUFF)
@@ -294,16 +333,16 @@ class LawOfCosines(Scene):
         eq4 = MathTex(r"\frac{R_e^2+R_s^2-d^2}{2R_eR_s}=\cos(L)").next_to(eq3,DOWN, buff=MED_LARGE_BUFF)
         eq5 = MathTex(r"L=\arccos(\frac{R_e^2+R_s^2-d^2}{2R_eR_s})").next_to(eq4,DOWN, buff=MED_LARGE_BUFF)
 
-        self.play(Write(eq1))
+        self.play(Write(eq1)) #0:20
+        self.wait(6)
+        self.play(Transform(eq1.copy(),eq2)) #0:29
         self.wait()
-        self.play(Transform(eq1.copy(),eq2))
-        self.wait()
-        self.play(Transform(eq2.copy(), eq3))
-        self.wait()
-        self.play(Transform(eq3.copy(), eq4))
-        self.wait()
+        self.play(Transform(eq2.copy(), eq3)) #0:32
+        self.wait(3)
+        self.play(Transform(eq3.copy(), eq4)) #0:35
+        self.wait(6.5)
         self.play(Transform(eq4.copy(), eq5))
-        self.wait()
+        self.wait(22)
 
 class ToF(Scene):
     def construct(self):
@@ -314,15 +353,20 @@ class ToF(Scene):
         visuals = VGroup(msg, sat, earth, l1)
         eq1 = MathTex(r"d=\frac{1}{2}rt")
         eq2 = MathTex(r"d=\frac{1}{2}(300,000)t")
+        eq3 = MathTex(r"d=\frac{1}{2}(300,000)\Delta t")
+        title = Tex("Radio Time of Flight").to_edge(UP)
         self.play(Create(visuals))
         self.wait()
         self.add(msg)
         self.play(MoveAlongPath(msg, l1), rate_func=there_and_back_with_pause, run_time=4)
-        self.wait()
-        self.play(visuals.animate.to_edge(UP, LARGE_BUFF))
+        self.wait(2)
+        self.play(Write(title), visuals.animate.to_edge(UP, LARGE_BUFF))
         self.play(Write(eq1))
-        self.wait()
-        self.play(Transform(eq1,eq2))
+        self.play(Transform(eq1, eq2))
+        self.play(MoveAlongPath(msg, l1), rate_func=there_and_back_with_pause, run_time=6)
+        self.wait(12)
+        self.play(Transform(eq1, eq3))
+        self.wait(10)
 
 
 class SphereScene(ThreeDScene):
@@ -331,7 +375,7 @@ class SphereScene(ThreeDScene):
         s = Sphere(radius=1.8, color=BLUE, fill_opacity=0.8)
         self.play(Create(s), run_time=1)
         self.begin_ambient_camera_rotation(rate=0.3)
-        self.wait(10)
+        self.wait(12)
         self.stop_ambient_camera_rotation()
 
 class Outro(Scene):
@@ -349,9 +393,27 @@ class Outro(Scene):
         self.play(manim.animate.scale(0.5))
         self.play(manim.animate.to_edge(UP), FadeIn(copyright))
         self.play(Write(thank_you), Write(andy))
-        self.wait(3)
+        self.wait(6)
         self.play(Transform(andy, terry))
-        self.wait(3)
+        self.wait(6)
         self.play(Transform(andy,_3b1b))
-        self.wait(3)
+        self.wait(10)
 
+class FieldCentricTitleCard(Scene):
+    def construct(self):
+        self.add(Tex("Field-Centric Control"))
+
+class TrilaterationTitleCard(Scene):
+    def construct(self):
+        self.add(Tex("Trilateration"))
+
+class GPSTitleCard(Scene):
+    def construct(self):
+        self.add(Tex("GPS Satellites"))
+
+
+class AndyBornIntro(Scene):
+    def construct(self):
+
+        gps_gif = ImageMobject("./assets/GPS.gif")
+        self.play(GrowFromCenter(gps_gif))

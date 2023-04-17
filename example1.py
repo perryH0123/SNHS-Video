@@ -1,4 +1,4 @@
-#kept in a seperate folder as the code for these scenes are huge
+#kept in a seperate file as the code for these scenes are huge
 from manim import *
 from math import sin, cos, radians
 
@@ -28,6 +28,7 @@ class RotationMatrix(Scene):
         v.next_to(m, LEFT)
         sol.next_to(eq, RIGHT)
         self.play(Write(v))
+        self.wait(5)
         self.play(Write(m), Write(eq))
         self.play(*(Write(brace) for brace in braces))
         self.wait()
@@ -53,14 +54,13 @@ class RotationMatrix(Scene):
             self.add(entry)
             self.remove(h1)
             self.remove(v1)
-
         self.wait()
         self.play(FadeOut(VGroup(v,m,eq,v_rect,last_h_rect)))
         self.play(sol.animate.move_to(ORIGIN))
-        self.wait(3)
+        self.wait(2)
         self.play(Unwrite(braces))
         self.play(sol.animate.scale(1.5))
-        self.wait(5)
+        self.wait(13)
 
 class ExplainXAndY(Scene):
     def construct(self):
@@ -92,6 +92,14 @@ class ExplainXAndY(Scene):
             lambda: DashedLine(plane.c2p(0,get_x_and_y()[1]), plane.c2p(*get_x_and_y()))
         )
 
+        def dot():
+            d = Dot(plane.c2p(*get_x_and_y()))
+            d.add(
+                Tex("Joystick Position").scale(0.8).next_to(d,UR)
+            )
+            return d
+        d = always_redraw(dot)
+
         arc = always_redraw(
             lambda: Angle.from_three_points(
                 plane.c2p(get_x_and_y()[0]),
@@ -116,26 +124,25 @@ class ExplainXAndY(Scene):
         )
 
         self.play(Create(c))
-        self.play(Create(hyp), Create(base_x), Create(base_y), Create(arc), Create(label))
+        self.play(Create(hyp), Create(base_x), Create(base_y), Create(arc), Create(label), Create(d))
         self.wait()
         self.play(Create(y_height), Create(x_label), Create(y_label))
-        self.wait()
+        self.wait(2)
         self.play(theta.animate.set_value(radians(20)))
-        self.wait(2)
+        self.wait()
         self.play(theta.animate.set_value(radians(75)))
-        self.wait(2)
+        self.wait()
         self.play(theta.animate.set_value(radians(150)))
-        self.wait(2)
-        self.play(theta.animate.set_value(radians(120)))
-        self.wait(2)
-        self.play(theta.animate.set_value(radians(45)))
-        self.wait(2)
+        self.wait()
         show_func.set_value(True)
         self.play(Transform(x_label,
                             MathTex(r"\cos(\alpha)").next_to(base_y, DOWN)),
                   Transform(y_label,
-                            MathTex(r"\sin(\alpha)").next_to(y_height,LEFT)))
-        self.wait(2)
+                            MathTex(r"\sin(\alpha)").next_to(y_height, LEFT)))
+        self.play(theta.animate.set_value(radians(120)))
+        self.wait()
+        self.play(theta.animate.set_value(radians(45)))
+        self.wait(3)
 
 class FormulaMagic(Scene):
     def construct(self):
@@ -149,10 +156,11 @@ class FormulaMagic(Scene):
         VGroup(subCos, subSin).arrange_in_grid(rows=2)
         VGroup(fullCos, fullSin).arrange_in_grid(rows=2)
         self.play(Write(eq))
-        self.wait(2)
-        self.play(Transform(orgCos, subCos), Transform(orgSin, subSin))
         self.wait()
+        self.play(Transform(orgCos, subCos), Transform(orgSin, subSin))
+        self.wait(2)
         self.play(Transform(orgCos, fullCos), Transform(orgSin, fullSin))
+        self.wait(3)
 
 class RobotLinearTransformationPi(LinearTransformationScene):
 
@@ -163,17 +171,25 @@ class RobotLinearTransformationPi(LinearTransformationScene):
         self.radians = theta
 
     def construct(self):
+        self.radians = self.radians if self.radians else radians(90)
         c2p = self.background_plane.c2p
         robot = Square().rotate(self.radians, about_point=c2p(0,0))
-        robot_vec = Vector([0,2], color=PINK).rotate(self.radians, about_point=c2p(0,0))
-        self.add_transformable_mobject(robot)
+        robot_vec = Vector([0, 2], color=PINK).rotate(self.radians, about_point=c2p(0,0))
+        self.add(robot)
         self.add_vector(robot_vec)
-        #self.play(Create(robot_vec.copy().set_stroke(opacity=0.5)))
         mat = np.array([
             [np.cos(self.radians), np.sin(self.radians)],
             [-np.sin(self.radians), np.cos(self.radians)]
         ])
+        self.wait(4)
+        self.moving_mobjects = []
         self.apply_matrix(mat)
+        self.moving_mobjects = []
+        self.wait(7)
+        self.moving_mobjects = []
+        self.apply_inverse(mat)
+        self.moving_mobjects = []
+        self.wait(3)
 
 class RobotLinearTransformationOther(RobotLinearTransformationPi):
     def __init__(self):
